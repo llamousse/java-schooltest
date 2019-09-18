@@ -2,6 +2,7 @@ package com.lambdaschool.school.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lambdaschool.school.model.Course;
+import com.lambdaschool.school.model.Instructor;
 import com.lambdaschool.school.service.CourseService;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,10 +17,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.ArrayList;
-import java.util.List;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -32,31 +34,48 @@ public class CourseControllerUnitTest
 	@MockBean
 	private CourseService courseService;
 
-	private List<Course> courseList;
+	private ArrayList<Course> courseList = new ArrayList<>();
+	private ArrayList<Instructor> instructorList = new ArrayList<>();
 
-//	@Before
-//	public void setUp() throws Exception
-//	{
-//		courseList = new ArrayList<>();
-//
-//		Course c1 = new Course("Data Science", "Sally");
-//		c1.setCourseid(30);
-//
-//		courseList.add(c1);
-//
-//		Course c2 = new Course("JavaScript", "Sally");
-//		c2.setCourseid(31);
-//
-//		courseList.add(c2);
-//
-//	}
+	@Before
+	public void setUp() throws Exception
+	{
+		Instructor i1 = new Instructor("Sally");
+		i1.setInstructid(1);
+		Instructor i2 = new Instructor("Lucy");
+		i2.setInstructid(2);
+		Instructor i3 = new Instructor("Charlie");
+		i3.setInstructid(3);
+
+		Course c1 = new Course("Data Science", i1);
+		c1.setCourseid(1);
+		Course c2 = new Course("JavaScript", i1);
+		c2.setCourseid(2);
+		Course c3 = new Course("Node.js", i1);
+		c3.setCourseid(3);
+		Course c4 = new Course("Java Back End", i2);
+		c4.setCourseid(4);
+		Course c5 = new Course("Mobile IOS", i2);
+		c5.setCourseid(5);
+		Course c6 = new Course("Mobile Android", i3);
+		c6.setCourseid(6);
+
+		instructorList.add(i1);
+
+		courseList.add(c1);
+		courseList.add(c2);
+		courseList.add(c3);
+		courseList.add(c4);
+		courseList.add(c5);
+		courseList.add(c6);
+	}
 
 	@Test
 	public void listAllCourses() throws Exception
 	{
 		String apiUrl = "/courses/courses";
 
-//		Mockito.when(courseService.findAll()).thenReturn(courseList);
+		Mockito.when(courseService.findAll()).thenReturn(courseList);
 
 		RequestBuilder rb = MockMvcRequestBuilders.get(apiUrl).accept(MediaType.APPLICATION_JSON);
 		MvcResult r = mockMvc.perform(rb).andReturn();
@@ -71,25 +90,20 @@ public class CourseControllerUnitTest
 	@Test
 	public void addNewCourse() throws Exception
 	{
-		String apiUrl = "/course/add";
+		String apiUrl = "/courses/course/add";
 
 		// build a course
-		ArrayList<Course> thisCourse = new ArrayList<>();
-		Course c3 = new Course("Test New Course", "Sally");
+		Instructor i1 = instructorList.get(0);
+		Course c7 = new Course("TEST Java testings", i1);
 
+		ObjectMapper mapper = new ObjectMapper();
+		String courseString = mapper.writeValueAsString(c7);
 
-//		Course newCourse = new Course();
-//
-//		newCourse.setCoursename(course.getCoursename());
-//		newCourse.setInstructor(course.getInstructor());
-//
-//		ArrayList<Student> newStudent = new ArrayList<>();
-//		for (Student s : course.getStudents())
-//		{
-//			newStudent.add(new Student(s.getStudname()));
-//		}
-//		newCourse.setStudents(newStudent);
-//
-//		return courserepos.save(newCourse);
+		Mockito.when(courseService.save(any(Course.class))).thenReturn(c7);
+
+		RequestBuilder rb = MockMvcRequestBuilders.post(apiUrl)
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+				.content(courseString);
+		mockMvc.perform(rb).andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print());
 	}
 }
