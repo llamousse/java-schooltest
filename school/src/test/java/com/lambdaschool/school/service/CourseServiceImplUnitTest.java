@@ -1,6 +1,8 @@
 package com.lambdaschool.school.service;
 
 import com.lambdaschool.school.SchoolApplication;
+import com.lambdaschool.school.model.Course;
+import com.lambdaschool.school.model.Instructor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +25,9 @@ public class CourseServiceImplUnitTest
 
 	@Autowired
 	private CourseService courseService;
+
+	@Autowired
+	private InstructorService instructorService;
 
 	@Before
 	public void setUp()
@@ -47,5 +52,20 @@ public class CourseServiceImplUnitTest
 	{
 		courseService.delete(100);
 		assertEquals(5, courseService.findAll().size());
+	}
+
+	@Test
+	public void save()
+	{
+		String course7Name = "Java Testing";
+		Instructor instructor7Name = instructorService.findInstructorById(1);
+		Course c7 = new Course(course7Name, instructor7Name);
+
+		Course addCourse = courseService.save(c7);
+
+		assertNotNull(addCourse);
+
+		Course foundCourse = courseService.findCourseById(addCourse.getCourseid());
+		assertEquals(addCourse.getCoursename(), foundCourse.getCoursename());
 	}
 }

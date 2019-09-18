@@ -67,4 +67,29 @@ public class CourseControllerUnitTest
 
 		assertEquals("Rest API returns List", er, tr);
 	}
+
+	@Test
+	public void addNewCourse() throws Exception
+	{
+		String apiUrl = "/course/add";
+
+		// build a course
+		ArrayList<Course> thisCourse = new ArrayList<>();
+		Course c3 = new Course("Test New Course", "Sally");
+
+
+//		Course newCourse = new Course();
+//
+//		newCourse.setCoursename(course.getCoursename());
+//		newCourse.setInstructor(course.getInstructor());
+//
+//		ArrayList<Student> newStudent = new ArrayList<>();
+//		for (Student s : course.getStudents())
+//		{
+//			newStudent.add(new Student(s.getStudname()));
+//		}
+//		newCourse.setStudents(newStudent);
+//
+//		return courserepos.save(newCourse);
+	}
 }
