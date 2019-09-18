@@ -40,6 +40,7 @@ public class CourseControllerUnitTest
 	@Before
 	public void setUp() throws Exception
 	{
+		// create set up of data
 		Instructor i1 = new Instructor("Sally");
 		i1.setInstructid(1);
 		Instructor i2 = new Instructor("Lucy");
